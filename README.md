@@ -1,6 +1,6 @@
 # tree-select
 
-> A tree-select component based on vue2.X
+> A tree-select component based on vue2.X + Element
 
 
 ## Build Setup
@@ -22,6 +22,7 @@ npm run build
 最后折腾来折腾去，还是决定按照element-ui中tree组件的原型，重新自己写过，发现效果还行，不卡了，也不迟钝了。分析原因可能是element-ui中组合了太多的功能，使得el-tree有点笨重了。所以我这里只使用自己需要的功能，会相对的性能好些。
 
 当前组件实现了单多选的功能，可以给v-model设置默认值，且当设置的id不存在时返回提示信息。
+
 
 ## 代码部分
     ---单选---
@@ -80,14 +81,14 @@ npm run build
 
 	{
 		visible:true,//用于设置搜索时节点的显示隐藏
-		expanded:true//用于设置节点的展开与收起
+		expanded:true,//用于设置节点的展开与收起
         checked:false//多选时才有的属性，当前节点的勾选状态
 	}
 
 ### 操作效果图
-单选
+#### 单选 ####
 ![Markdown](http://i2.muimg.com/1949/46cd392b73c2a92d.gif)
-多选
+#### 多选 ####
 ![Markdown](http://i4.buimg.com/1949/6a73cba69b44b68b.gif)
-提示信息
+#### 提示信息 ####
 ![Markdown](http://i4.buimg.com/1949/6474d05355f43deb.gif)
