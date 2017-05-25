@@ -1,4 +1,4 @@
-# tree-select
+# vue-treeSelect
 
 > A tree-select component based on vue2.X + Element
 
@@ -23,6 +23,7 @@ npm run build
 
 当前组件实现了单多选的功能，可以给v-model设置默认值，且当设置的id不存在时返回提示信息。
 
+[在线Demo](https://wilsonis.github.io/treeSelect/ "在线Demo")
 
 ## 代码部分
     ---单选---
