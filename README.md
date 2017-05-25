@@ -21,18 +21,30 @@ npm run build
 
 最后折腾来折腾去，还是决定按照element-ui中tree组件的原型，重新自己写过，发现效果还行，不卡了，也不迟钝了。分析原因可能是element-ui中组合了太多的功能，使得el-tree有点笨重了。所以我这里只使用自己需要的功能，会相对的性能好些。
 
-这里只实现了单选的功能，后期有多选的需求再补充。
+当前组件实现了单多选的功能，可以给v-model设置默认值，且当设置的id不存在时返回提示信息。
 
 ## 代码部分
-
+    ---单选---
     <tree-select
-          ref="tree-select"
-          :treeData="treeData"
-          :treeProps="treeProps"
-          v-model="treeSelected"
-          placeholder="请选择部门"
-          @setSelectedId="setSelectedId">
-      </tree-select>
+        :treeData="treeData"
+        :treeProps="treeProps"
+        v-model="treeSelected"
+        :multiple="false"
+        placeholder="请选择部门"
+        @errorCallback="showTreeError"
+        @setSelectedId="setSelectedId">
+    </tree-select>
+
+    ---多选---
+    <tree-select
+        :treeData="treeData"
+        :treeProps="treeProps"
+        v-model="treeSelectArr"
+        :multiple="true"
+        placeholder="请选择部门"
+        @errorCallback="showTreeError"
+        @setSelectedId="setSelectedId">
+    </tree-select>
 
 ### 属性
 	treeData：树节点数据，类型：Array[Object]
@@ -41,12 +53,19 @@ npm run build
         children: "childDepts",//子级节点属性
         level:"deptLevel" //节点级数
     }
+    v-model:单选数据类型为字符串或数字，多选数据类型为数组
+    multiple：false为单选，true为多选
+    placeholder：略
 
 ### 事件
-	setSelectedId：节点被点击时的回调，参数是节点的id，也可以在tree.vue的handleNodeClick方法中设置返回节点本身：
+	1. setSelectedId：节点被点击时的回调，参数是节点的id，也可以在tree.vue的handleNodeClick方法中设置返回节点本身：
 	this.$emit('setSelectedId',node.id) ==>
 	this.$emit('setSelectedId',node);
 	看个人的需要了。
+    2. errorCallback：设置默认值时，下拉列表中没有该id则返回提示信息，返回的参数为{
+        message:发现不存在的部门id:***,
+        data:[] || ''
+    }
 
 ### 节点数据属性要求
 本着后端返回的数据量越少越小越好越快的想法，项目中就只让后端返回了下面四个属性。
@@ -62,8 +81,13 @@ npm run build
 	{
 		visible:true,//用于设置搜索时节点的显示隐藏
 		expanded:true//用于设置节点的展开与收起
+        checked:false//多选时才有的属性，当前节点的勾选状态
 	}
 
 ### 操作效果图
-
+单选
 ![Markdown](http://i2.muimg.com/1949/46cd392b73c2a92d.gif)
+多选
+![Markdown](http://i4.buimg.com/1949/6a73cba69b44b68b.gif)
+提示信息
+![Markdown](http://i4.buimg.com/1949/6474d05355f43deb.gif)

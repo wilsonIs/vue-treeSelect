@@ -5,15 +5,17 @@
         <div class="ats-tree-node__content"
             v-show="node.visible"
             :style="{ 'padding-left': (node[treeProps.level] - 1) * 16 + 'px' }"
-            :class="{'is-current':currentNodeId===node.id}">
-            <div class="ats-tree-node__icon">
+            :class="{'is-current':currentNodeId===node.id,'is-checked':node.checked}">
+            <div class="ats-tree-node__icon icon">
                 <span
                     v-if="node[treeProps.children]&&node[treeProps.children].length"
-                    class="ats-tree-node__expand-icon"
+                    class="ats-tree-node__expand-icon icon"
                     :class="{ expanded: node.expanded }">
                 </span>
             </div>
-            <span class="ats-tree-node__label" :title="handleTitleVisible(node[treeProps.label])">{{node[treeProps.label]}}</span>
+            <span
+                class="ats-tree-node__label"
+                :title="handleTitleVisible(node[treeProps.label])">{{node[treeProps.label]}}</span>
         </div>
         <ul class="ats-tree-node__children" v-if="node.expanded">
             <tree-node
@@ -42,6 +44,7 @@
                 defautl:{}
             },
             treeProps:{},
+            multiple:{},
             currentNodeId:{},
             eventHub:{},
             query:{
@@ -53,21 +56,23 @@
         },
         data() {
             return {
-                expanded:false,
             }
         },
         methods: {
             handleClick(node,event){
+                let targetClass = event.target.getAttribute('class');
                 if(node.expanded){
                     this.$set(node,'expanded',false);
                 }else{
                     this.$set(node,'expanded',true);
                 }
-                this.eventHub.$emit('node-click',node);
+                if(!(targetClass.indexOf('icon')>-1)){
+                    this.eventHub.$emit('node-click',node,event);
+                }
             },
             handleTitleVisible(title){
                 let titleLen = title.replace(/[^\x00-\xff]/g, '..').length;
-                if(titleLen>30){
+                if(titleLen>28){
                     return title;
                 }else{
                     return '';
@@ -116,11 +121,22 @@
                 }
             }
             .ats-tree-node__label{
-                max-width: 250px;
+                max-width: 230px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 display: inline-block;
+            }
+        }
+        .ats-tree-node__content.is-checked .ats-tree-node__label{
+            &::after{
+                color: #20a0ff;
+                content: "\E608";
+                font-family: element-icons;
+                right: 10px;
+                font-size: 11px;
+                position: absolute;
+                -webkit-font-smoothing: antialiased;
             }
         }
     }
