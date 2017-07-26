@@ -1,9 +1,9 @@
 <template>
     <div class="ats-tree" v-clickoutside="handleCloseTree" ref="atsTree">
-        <div class="ats-input">
+        <div class="ats-input" @mouseenter="hovering=true" @mouseleave="hovering=false">
             <div class="ats-input-single" v-if="!this.multiple">
                 <i class="el-input__icon el-icon-caret-bottom"
-                    :class="{'is-reverse':treeVisible}"
+                    :class="{'is-reverse':treeVisible,'el-icon-circle-close':showCloseIcon}"
                     @click="handleCloseTree(!treeVisible)"></i>
                 <input type="text"
                     class="el-input__inner"
@@ -26,7 +26,7 @@
                             :closable="true"
                             type="primary"
                             class="el-tag--primary"
-                            @close="handleDelItem(item,event)"
+                            @close="handleDelItem(item,$event)"
                             :title="handleTitleVisible(item[treeProps.label])"
                         >
                             {{item[treeProps.label] | showEllips}}
@@ -106,6 +106,11 @@
         updated(){
             this.isDefault = true;
         },
+        computed:{
+            showCloseIcon(){
+                return this.hovering&&this.value !== undefined &&this.value !== ''&&!this.multiple;
+            }
+        },
         watch:{
             value(val){
                 if(this.isDefault){
@@ -159,7 +164,8 @@
                 error:{
                     message:'',
                     data:''
-                }
+                },
+                hovering:false
             }
         },
         methods: {
@@ -167,22 +173,28 @@
                 if(this.multiple){
                     this.checkedItems = [];
                     this.checkedKeys = [];
+                    this.$emit('setSelectedId',[]);
                 }else{
                     this.treeSelected = '';
                     this.currentNodeId = '';
+                    this.$emit('setSelectedId','');
                 }
             },
             handleCloseTree(val){
-                if(val==undefined){
-                    this.treeVisible = false;
+                if(this.showCloseIcon){
+                    this.resetValue();
                 }else{
-                    this.treeVisible = val;
-                }
-                if(this.multiple){
-                    this.treeSelected = '';
-                    this.handleFilter();
-                    if(val){
-                        this.setInputFocus();
+                    if(val==undefined){
+                        this.treeVisible = false;
+                    }else{
+                        this.treeVisible = val;
+                    }
+                    if(this.multiple){
+                        this.treeSelected = '';
+                        this.handleFilter();
+                        if(val){
+                            this.setInputFocus();
+                        }
                     }
                 }
             },
